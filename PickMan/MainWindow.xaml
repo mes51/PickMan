@@ -1,0 +1,48 @@
+﻿<Window x:Class="PickMan.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PickMan"
+        xmlns:cp="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
+        mc:Ignorable="d"
+        x:Name="RootWindow"
+        Closing="RootWindow_Closing"
+        Closed="RootWindow_Closed"
+        Title="PickMam" Height="441.493" Width="350" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False">
+    <Window.Resources>
+        <local:ColorToColorHexConverter x:Key="ColorToColorHexConverter"/>
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding ElementName=RootWindow, Path=CopyCommand}"/>
+        <KeyBinding Gesture="Esc" Command="{Binding ElementName=RootWindow, Path=CloseCommand}"/>
+    </Window.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <cp:ColorCanvas Grid.Row="0" x:Name="Picker" UsingAlphaChannel="False" SelectedColor="#FFFF0000"/>
+
+        <Grid Grid.Row="1">
+            <Rectangle Height="1" Fill="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" VerticalAlignment="Top"/>
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox x:Name="WithHash" Grid.Column="0" Content="With #" VerticalAlignment="Center"/>
+                <TextBox x:Name="ColorCode" Grid.Column="1" Height="23" Margin="10,0" IsReadOnly="True" VerticalAlignment="Center">
+                    <MultiBinding Converter="{StaticResource ColorToColorHexConverter}">
+                        <Binding ElementName="Picker" Path="SelectedColor"/>
+                        <Binding ElementName="WithHash" Path="IsChecked"/>
+                    </MultiBinding>
+                </TextBox>
+                <Button Grid.Column="2" Content="OK" Width="75" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding ElementName=RootWindow, Path=CopyCommand}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
